@@ -1,31 +1,28 @@
-const {
-  User,
-  Thought
-} = require('../models');
+const { Thought, User } = require("../models");
 
 module.exports = {
-    // get all users
-    getAllUser(req, res) {
-      User.find({})
-        .then((users) => res.json(users))
-        .catch((err) => res.status(500).json(err));
-    },
+  // get all users
+  getAllUser(req, res) {
+    User.find({})
+      .then((users) => res.json(users))
+      .catch((err) => res.status(500).json(err));
+  },
 
-    // get only one
-    getSingleUser(req, res) {
-      User.findOne({ _id: req.params.userId })
-        .select('-__v')
-        .populate("thoughts")
-        .then((user) =>
-          !user
-            ? res.status(404).json({ message: 'No user with that ID' })
-            : res.json(user)
-        )
-        .catch((err) => res.status(500).json(err));
-    },
+  // get only one
+  getSingleUser(req, res) {
+    User.findOne({ _id: req.params.userId })
+      .select('-__v')
+      .populate("thoughts")
+      .then((user) =>
+        !user
+          ? res.status(404).json({ message: 'No user with that ID' })
+          : res.json(user)
+      )
+      .catch((err) => res.status(500).json(err));
+  },
 
   // create a user
-  createUser({ req, res }) {
+  createUser(req, res) {
     User.create(req.body)
       .then((user) => res.json(user))
       .catch((err) => res.status(500).json(err));
