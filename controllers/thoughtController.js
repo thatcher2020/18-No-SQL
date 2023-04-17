@@ -1,4 +1,5 @@
 const { User, Thought } = require('../models');
+const mongoose = require('mongoose');
 
 module.exports = {
   // Get all thoughts
@@ -22,10 +23,11 @@ module.exports = {
 
   // create thought
   createThought(req, res) {
+    console.log("req.body.userId", req.body.userId)
     Thought.create(req.body)
       .then(({ _id }) => {
         return User.findOneAndUpdate(
-          { _id: req.body.userId },
+          { _id: mongoose.Types.ObjectId(req.body.userId) },
           { $push: { thoughts: _id } },
           { new: true }
         );
@@ -35,7 +37,10 @@ module.exports = {
           ? res.status(404).json({ message: 'No user found with this id!' })
           : res.json(user);
       })
-      .catch((err) => res.status(500).json(err));
+      .catch((err) => {
+        console.log(err);
+        res.status(500).json(err)
+      });
   },
 
   // update thought by id
